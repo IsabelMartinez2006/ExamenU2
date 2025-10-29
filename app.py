@@ -1,4 +1,3 @@
-from pydoc import html
 from flask import Flask, jsonify, render_template_string, request, redirect, url_for
 
 app = Flask(__name__)
@@ -6,7 +5,7 @@ app = Flask(__name__)
 dispositivos_registrados = []
 
 
-@app.route('/formulario', methods=['GET', 'POST'])
+@app.route('/formulario', methods=['GET'])
 def agregar():
     return render_template_string('''
    <html>
@@ -22,7 +21,7 @@ def agregar():
             Ubicacion: <input type="text" name="ubicacion"><br>
             Tipo : <input type="text" name="tipo"><br>
              Otro : <input type="text" name="otro"><br><br>
-            <input type="submit" value="Registrar">
+            <input type="submit" value="agregar">
         </form>
     </body>
     </center>
@@ -31,7 +30,7 @@ def agregar():
 ''')
 
 
-@app.route('/agregar', methods=['GET'])
+@app.route('/agregar', methods=['POST'])
 def agregar_dispositivo():
     data = {
         "id": request.form['id'],
@@ -52,7 +51,7 @@ def mostrar_dispositivos():
     html = ""
     for d in dispositivos_registrados:
         html += f"""
-        <div name="dispositivo" class="dispositivo">
+        <div name="dispositivo" style="border:1px solid black; padding:10px; margin:10px; background-color:lightblue;">
             <strong>{d['id']}</strong><br>
             <b>Nombre:</b> {d['nombre']}<br>
             <b>IP:</b> {d['descripcion']}<br>
@@ -62,14 +61,6 @@ def mostrar_dispositivos():
             <b>Otro:</b> {d['tipo']}<br><br>
 
         </div>
-    <style>
-    .dispositivo {
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    </style>
         """
 
     return render_template_string(f"""
@@ -82,6 +73,30 @@ def mostrar_dispositivos():
     </body>
     </html>
     """)
+
+@app.route('/actualizardisp', methods=['PUT'])
+def actualizar_dispositivo():
+    data = request.get_json()
+    dispositivo_id = data.get('id')
+
+    html = ""
+    html += f"""
+           <form method="POST" action="/agregar">
+             id : <input type="text" name="id"><br>
+            
+        </form>
+        """
+
+
+    for dispositivo in dispositivos_registrados:
+        if dispositivo['id'] == dispositivo_id:
+            dispositivo.update(data)
+            return jsonify({"message": "Dispositivo actualizado", "dispositivo": dispositivo}), 200
+
+    return jsonify({"message": "Dispositivo no encontrado"})
+
+
+
 
 
 if __name__ == '__main__':
