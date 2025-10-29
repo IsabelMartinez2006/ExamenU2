@@ -47,8 +47,41 @@ def agregar_dispositivo():
 
 
 
+@app.route('/dispositivos', methods=['GET'])
+def mostrar_dispositivos():
+    html = ""
+    for d in dispositivos_registrados:
+        html += f"""
+        <div name="dispositivo" class="dispositivo">
+            <strong>{d['id']}</strong><br>
+            <b>Nombre:</b> {d['nombre']}<br>
+            <b>IP:</b> {d['descripcion']}<br>
+            <b>MAC:</b> {d['ip']}<br>
+            <b>Ubicacion:</b> {d['mac']}<br>
+            <b>Tipo:</b> {d['ubicacion']}<br>
+            <b>Otro:</b> {d['tipo']}<br><br>
 
+        </div>
+    <style>
+    .dispositivo {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    </style>
+        """
 
+    return render_template_string(f"""
+    <html>
+    <head><title>Dispositivos</title></head>
+    <body>
+        <h1>Lista de Dispositivos</h1>
+ 
+        {html}
+    </body>
+    </html>
+    """)
 
 
 if __name__ == '__main__':
