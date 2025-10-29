@@ -3,7 +3,6 @@ from flask import Flask, jsonify, render_template_string, request, redirect, url
 
 app = Flask(__name__)
 
-# Lista para almacenar los dispositivos
 dispositivos_registrados = []
 
 
@@ -14,8 +13,8 @@ def agregar():
    <center>
     <body style="background-color:lightblue;">
         <h1>Registrar Dispositivos</h1>
-        <form method="POST" action="/formulario">
-             Id : <input type="text" name="id"><br>
+        <form method="POST" action="/agregar">
+             id : <input type="text" name="id"><br>
             Nombre del Dispositivo: <input type="text" name="nombre"><br>
             Descripcion: <input type="text" name="descripcion"><br>
             Ip: <input type="text" name="ip"><br>
@@ -32,42 +31,25 @@ def agregar():
 ''')
 
 
+@app.route('/agregar', methods=['GET'])
+def agregar_dispositivo():
+    data = {
+        "id": request.form['id'],
+        "nombre": request.form['nombre'],
+        "descripcion": request.form['descripcion'],
+        "ip": request.form['ip'],
+        "mac": request.form['mac'],
+        "ubicacion": request.form['ubicacion'],
+        "tipo": request.form['tipo'],
+    }
+    dispositivos_registrados.append(data)
+    return redirect(url_for('mostrar_dispositivos'))
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/formulario')
-def formulario():
-    print("mensaje ")
-    dispositivos_registrados.append("leandro calderon") #añadir un nuevo elemento
-    
-    n1=10
-    n2=100
-    n3=100
-    #html="<h6>"+dispositivos_registrados[0]+"</h6>"#mostrar lo que esta en esa lista en esa posicuion
-    html="<h6>"+str((n1+n2)/n3)+"</h6>"
-    html += "<br>"
-    html += "<div style='background-color:green; color:white; height:300 px '>"+dispositivos_registrados[0]+"</div>"
-    
-    return html
-    #str(dispositivos_registrados[0])#retornar en string 
-  
 
 if __name__ == '__main__':
     app.run(debug=True)
